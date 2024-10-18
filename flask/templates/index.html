@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análisis de Activos</title>
+    <style>
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        nav ul li {
+            display: inline;
+            margin-right: 15px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Barra de navegación -->
+    <nav>
+        <ul>
+            <li><a href="{{ url_for('index') }}">Análisis de Activos</a></li>
+            <li><a href="{{ url_for('calculadora') }}">Calculadora de Activos</a></li>
+        </ul>
+    </nav>
+
+    <!-- Contenedor principal del análisis de activos -->
+    <div>
+        <!-- Título principal de la página -->
+        <h1>Análisis de Activos</h1>
+
+        <!-- Botón para obtener y guardar datos -->
+        <form action="{{ url_for('obtener_guardar') }}" method="POST">
+            <button type="submit">Obtener y Guardar Datos</button>
+        </form>
+
+        <!-- Mensajes flash para notificaciones -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div>
+                    <ul>
+                        {% for category, message in messages %}
+                            <li class="{{ category }}">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- Formulario para seleccionar el activo a analizar -->
+    <div>
+        <h2>Seleccionar Activo</h2>
+        <form action="{{ url_for('seleccionar_activo') }}" method="POST">
+            <!-- Menú desplegable con opciones de activos -->
+            <select name="ticker">
+                <option value="ALUA">ALUA</option>
+                <option value="BBAR">BBAR</option>
+                <option value="BMA">BMA</option>
+                <option value="BYMA">BYMA</option>
+                <option value="CEPU">CEPU</option>
+                <option value="COME">COME</option>
+                <option value="CRES">CRES</option>
+                <option value="EDN">EDN</option>
+                <option value="GGAL">GGAL</option>
+                <option value="IRSA">IRSA</option>
+                <option value="LOMA">LOMA</option>
+                <option value="METR">METR</option>
+                <option value="MIRG">MIRG</option>
+                <option value="PAMP">PAMP</option>
+                <option value="SUPV">SUPV</option>
+                <option value="TECO2">TECO2</option>
+                <option value="TGNO4">TGNO4</option>
+                <option value="TGSU2">TGSU2</option>
+                <option value="TRAN">TRAN</option>
+                <option value="TXAR">TXAR</option>
+                <option value="VALO">VALO</option>
+                <option value="YPFD">YPFD</option>
+                <option value="AL29">AL29</option>
+                <option value="AL29D">AL29D</option>
+                <option value="AL30">AL30</option>
+                <option value="AL30D">AL30D</option>
+                <option value="AL35">AL35</option>
+                <option value="AL35D">AL35D</option>
+                <option value="AL41">AL41</option>
+                <option value="AL41D">AL41D</option>
+                <option value="S11N4">S11N4</option>
+                <option value="S14O4">S14O4</option>
+                <option value="S16Y5">S16Y5</option>
+                <option value="S18J5">S18J5</option>
+                <option value="S28F5">S28F5</option>
+                <option value="S29G5">S29G5</option>
+                <option value="S30S5">S30S5</option>
+                <option value="S31L5">S31L5</option>
+                <option value="S31M5">S31M5</option>
+                <option value="S31O4">S31O4</option>
+            </select>
+            <!-- Botón para enviar el formulario -->
+            <button type="submit">Analizar</button>
+        </form>
+
+        <!-- Mostrar los resultados si un activo está seleccionado -->
+        {% if ticker %}
+            <!-- Información general sobre el activo seleccionado -->
+            <h3>Información</h3>
+            <p>Fecha: {{ fecha }}</p>
+            <p>Ticker: {{ ticker }}</p>
+            <p>Vencimiento: {{ vencimiento }}</p>
+            <p>Precio: {{ precio }}</p>
+            <p>Variación: {{ variaciones_fechas['Diaria'] }}</p>
+            <p>Nombre: {{ info_adicional }}</p>
+            
+            <!-- Mostrar información detallada del activo (sin subtítulo adicional) -->
+            <div>
+                <h3>Resultados</h3>
+                <p>Moneda: {{ moneda }}</p>
+                <p>Cotización: {{ precio }}</p>
+                <p>Apertura: {{ apertura }}</p>
+                <p>Cierre Anterior: {{ cierre_anterior }}</p>
+                <p>Máximo: {{ maximo }}</p>
+                <p>Mínimo: {{ minimo }}</p>
+                <p>Volumen: {{ volumen }}</p>
+                <p>Monto Negociado: {{ monto_negociado }}</p>
+                <p>Operaciones: {{ operaciones }}</p>
+            </div>
+
+            <!-- Mostrar las variaciones entre fechas si están disponibles -->
+            <div>
+                {% if variaciones_fechas %}
+                    <h3>Variación</h3>
+                    <p>Semanal: {{ variaciones_fechas['Semanal'] }}</p>
+                    <p>Mensual: {{ variaciones_fechas['Mensual'] }}</p>
+                    <p>Trimestral: {{ variaciones_fechas['Trimestral'] }}</p>
+                    <p>Semestral: {{ variaciones_fechas['Semestral'] }}</p>
+                    <p>Anual: {{ variaciones_fechas['Anual'] }}</p>
+                {% else %}
+                    <p>No se encontraron variaciones entre fechas.</p>
+                {% endif %}
+            </div>
+
+            <!-- Mostrar el gráfico generado si está disponible -->
+            <div>
+                {% if graph_url %}
+                    <h3>Gráfico</h3>
+                    <img src="data:image/png;base64,{{ graph_url }}" alt="Gráfico de Líneas">
+                {% endif %}
+            </div>
+
+            <!-- Sección para buscar cotizaciones históricas -->
+            <div>
+                <h3>Cotizaciones Históricas</h3>
+                <form action="{{ url_for('buscar_cotizaciones') }}" method="POST">
+                    <!-- Campo oculto para el ticker seleccionado -->
+                    <input type="hidden" name="ticker" value="{{ ticker }}">
+                    <!-- Campos para seleccionar el rango de fechas -->
+                    <label for="fecha_desde">Desde:</label>
+                    <input type="date" name="fecha_desde" required value="{{ fecha_desde }}">
+                    <label for="fecha_hasta">Hasta:</label>
+                    <input type="date" name="fecha_hasta" required value="{{ fecha_hasta }}">
+                    <button type="submit">Buscar</button>
+                </form>
+                
+                <!-- Mostrar los resultados de la búsqueda si existen -->
+                {% if df %}
+                    <div>{{ df|safe }}</div>
+                    <a href="{{ url_for('exportar_csv') }}">Exportar a CSV</a>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>

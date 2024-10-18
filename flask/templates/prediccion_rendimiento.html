@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Predicción de Rendimiento</title>
+</head>
+<body>
+    <div>
+        <h1>Predicción de Rendimiento de Activos</h1>
+        
+        <!-- Formulario para seleccionar el activo -->
+        <h2>Seleccionar Activo</h2>
+        <form action="{{ url_for('predecir_rendimiento_activo') }}" method="POST">
+            <label for="ticker">Activo:</label>
+            <select name="ticker" id="ticker">
+                <option value="ALUA">ALUA</option>
+                <option value="BBAR">BBAR</option>
+                <option value="BMA">BMA</option>
+                <!-- Agregar más opciones según los activos disponibles -->
+            </select>
+            <button type="submit">Predecir Rendimiento</button>
+        </form>
+        
+        <!-- Mostrar los resultados de la predicción -->
+        {% if prediccion %}
+            <h3>Predicción de Rendimiento</h3>
+            <p>El rendimiento estimado es: {{ prediccion }}</p>
+        {% endif %}
+        
+        <!-- Mostrar los datos históricos analizados -->
+        {% if datos %}
+            <h3>Datos Históricos</h3>
+            <div>
+                {{ datos|safe }}
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>

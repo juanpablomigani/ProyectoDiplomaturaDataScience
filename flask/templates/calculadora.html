@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Activos</title>
+    <style>
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        nav ul li {
+            display: inline;
+            margin-right: 15px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Barra de navegación -->
+    <nav>
+        <ul>
+            <li><a href="{{ url_for('index') }}">Análisis de Activos</a></li>
+            <li><a href="{{ url_for('calculadora') }}">Calculadora de Activos</a></li>
+        </ul>
+    </nav>
+
+    <!-- Contenedor principal de la calculadora -->
+    <div>
+        <!-- Título principal de la página -->
+        <h1>Calculadora de Activos</h1>
+        
+        <!-- Formulario para seleccionar el activo -->
+        <h2>Seleccionar Activo</h2>
+        <form action="{{ url_for('calculadora') }}" method="POST">
+            <!-- Menú desplegable con opciones de activos (lecaps) -->
+            <select name="activo" id="activo">
+                <option value="S31O4">S31O4</option>
+                <option value="S11N4">S11N4</option>
+                <option value="S29N4">S29N4</option>
+                <option value="S13D4">S13D4</option>
+                <option value="S17E5">S17E5</option>
+                <option value="S31E5">S31E5</option>
+                <option value="S14F5">S14F5</option>
+                <option value="S28F5">S28F5</option>
+                <option value="S14M5">S14M5</option>
+                <option value="S31M5">S31M5</option>
+                <option value="S16A5">S16A5</option>
+                <option value="S28A5">S28A5</option>
+                <option value="S16Y5">S16Y5</option>
+                <option value="S30Y5">S30Y5</option>
+                <option value="S18J5">S18J5</option>
+                <option value="S30J5">S30J5</option>
+                <option value="S31L5">S31L5</option>
+                <option value="S29G5">S29G5</option>
+                <option value="S12S5">S12S5</option>
+                <option value="S30S5">S30S5</option>
+            </select>
+            <!-- Botón para enviar el formulario -->
+            <button type="submit">Calcular</button>
+        </form>
+
+        <!-- Mostrar resultados solo si hay un activo seleccionado -->
+        {% if activo %}
+            <!-- Sección de información sobre el activo seleccionado -->
+            <h3>Información</h3>
+            <p>Fecha: {{ fecha_hoy }}</p>
+            <p>Fecha de Vencimiento: {{ fecha_vencimiento }}</p>
+            <p>Días: {{ dias }}</p>
+            <p>Meses: {{ meses }}</p>
+            <p>Precio: ${{ px }}</p> <!-- Precio del activo con símbolo $ -->
+            <p>Pago Final: ${{ pago_final }}</p> <!-- Pago final con símbolo $ -->
+            <p>TNA: {{ tna }}</p>
+            <p>TEM: {{ tem }}</p>
+            <p>TEA: {{ tea }}</p>
+
+            <!-- Mostrar el gráfico de rendimientos si está disponible -->
+            {% if graph_url %}
+                <h3>Gráfico</h3>
+                <img src="data:image/png;base64,{{ graph_url }}" alt="Gráfico de Rendimientos">
+            {% endif %}
+        {% endif %}
+
+        <!-- Mostrar resultados adicionales si existen -->
+        {% if resultado %}
+            <h3>Resultados</h3>
+            <div>
+                {{ resultado|safe }} <!-- Mostrar tabla de resultados adicionales -->
+            </div>
+
+            <!-- Mostrar gráfico de Ganancia y TNA en dólares si está disponible -->
+            {% if grafico_ganancia_url %}
+                <h3>Gráfico</h3>
+                <div>
+                    <img src="data:image/png;base64,{{ grafico_ganancia_url }}" alt="Gráfico de Ganancia y TNA en Dólares">
+                </div>
+            {% endif %}
+        {% endif %}
+    </div>
+</body>
+</html>

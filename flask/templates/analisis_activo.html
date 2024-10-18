@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análisis de Activos</title>
+</head>
+<body>
+    <div>
+        <h1>Análisis de Activos</h1>
+        
+        <!-- Formulario para seleccionar el activo -->
+        <h2>Seleccionar Activo</h2>
+        <form action="{{ url_for('analizar_activo') }}" method="POST">
+            <label for="ticker">Activo:</label>
+            <select name="ticker" id="ticker">
+                <option value="ALUA">ALUA</option>
+                <option value="BBAR">BBAR</option>
+                <option value="BMA">BMA</option>
+                <!-- Agregar más opciones según los activos disponibles -->
+            </select>
+            <button type="submit">Analizar Activo</button>
+        </form>
+        
+        <!-- Mostrar los resultados del análisis -->
+        {% if datos %}
+            <h3>Resultados del Análisis</h3>
+            <div>
+                {{ datos|safe }}
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
